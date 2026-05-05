@@ -345,9 +345,20 @@ def process_frame():
     if model is None or holistic is None:
         return jsonify({"error": "Model not loaded"}), 503
 
-    data       = request.get_json()
+    data       = request.get_json(silent=True)
+    if not data:
+        print(f"❌ No JSON data received! Content-Type: {request.content_type}")
+        print(f"❌ Raw data: {request.data[:200]}")
+        return jsonify({"error": "No JSON data"}), 400
+
     peer_id    = data.get("peerId",  "unknown")
     frame_b64  = data.get("frame",   "")
+
+    print(f"✅ Received frame from peer: {peer_id}, frame length: {len(frame_b64)}")
+
+    if not frame_b64:
+        print(f"❌ Frame is empty! Keys received: {list(data.keys())}")
+        return jsonify({"error": "Empty frame"}), 400
     tts_voice  = data.get("voice",   "female")
     tts_rate   = data.get("rate",    "+0%")
     tts_volume = data.get("volume",  "+0%")
