@@ -30,8 +30,7 @@ import edge_tts
 import tempfile
 
 app = Flask(__name__)
-CORS(app)
-
+CORS(app, origins="*", allow_headers=["Content-Type"])
 # ==============================================================================
 # ARABIC PRONUNCIATION MAP
 # ==============================================================================
