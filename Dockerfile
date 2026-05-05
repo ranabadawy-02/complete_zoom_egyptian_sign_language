@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-# Install system libraries that opencv needs
+# Install system libraries
 RUN apt-get update && apt-get install -y \
     libgl1 \
     libglib2.0-0 \
@@ -11,12 +11,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY requirements.txt .
-
-# Install Python packages in correct order
+# Install CPU-only torch FIRST (much smaller, ~500MB instead of 2GB)
 RUN pip install --upgrade pip
+RUN pip install torch==2.1.0+cpu --index-url https://download.pytorch.org/whl/cpu
 RUN pip install numpy==1.26.4
-RUN pip install torch==2.1.0
 RUN pip install mediapipe==0.10.9
 RUN pip install --force-reinstall opencv-python-headless==4.8.1.78
 RUN pip install flask flask-cors edge-tts
