@@ -369,12 +369,18 @@ def process_frame():
     # Browser canvas toDataURL() gives correct orientation already.
     # ------------------------------------------------------------------
     try:
-        img_bytes = base64.b64decode(frame_b64.split(",")[-1])
-        nparr     = np.frombuffer(img_bytes, np.uint8)
-        frame     = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        parts = frame_b64.split(",")
+        print(f"🔍 Frame prefix: {parts[0] if len(parts) > 1 else 'NO COMMA FOUND'}")
+        img_bytes = base64.b64decode(parts[-1])
+        print(f"🔍 Decoded bytes length: {len(img_bytes)}")
+        nparr = np.frombuffer(img_bytes, np.uint8)
+        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         if frame is None:
+            print(f"❌ cv2.imdecode returned None! bytes length: {len(img_bytes)}")
             return jsonify({"error": "Invalid frame"}), 400
+        print(f"✅ Frame decoded successfully! Shape: {frame.shape}")
     except Exception as e:
+        print(f"❌ Frame decode exception: {str(e)}")
         return jsonify({"error": f"Frame decode error: {str(e)}"}), 400
 
     # ------------------------------------------------------------------
