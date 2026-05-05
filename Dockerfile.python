@@ -16,7 +16,7 @@ RUN pip install --upgrade pip
 RUN pip install torch==2.1.0+cpu --index-url https://download.pytorch.org/whl/cpu
 RUN pip install numpy==1.26.4
 RUN pip install mediapipe==0.10.9
-RUN pip install --force-reinstall opencv-python-headless==4.8.1.78
+RUN pip install --force-reinstall opencv-python-headless==4.9.0.80
 RUN pip install flask flask-cors edge-tts
 
 COPY . .
