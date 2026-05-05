@@ -373,7 +373,7 @@ def process_frame():
         print(f"🔍 Frame prefix: {parts[0] if len(parts) > 1 else 'NO COMMA FOUND'}")
         img_bytes = base64.b64decode(parts[-1])
         print(f"🔍 Decoded bytes length: {len(img_bytes)}")
-        nparr = np.frombuffer(img_bytes, np.uint8)
+        nparr = np.frombuffer(img_bytes, np.uint8).copy()
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         if frame is None:
             print(f"❌ cv2.imdecode returned None! bytes length: {len(img_bytes)}")
