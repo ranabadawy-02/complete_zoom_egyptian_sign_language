@@ -370,19 +370,16 @@ def process_frame():
     # ------------------------------------------------------------------
     try:
         parts = frame_b64.split(",")
-        print(f"🔍 Frame prefix: {parts[0] if len(parts) > 1 else 'NO COMMA FOUND'}")
         img_bytes = base64.b64decode(parts[-1])
-        print(f"🔍 Decoded bytes length: {len(img_bytes)}")
-        nparr = np.array(bytearray(img_bytes), dtype=np.uint8)
-        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        if frame is None:
-            print(f"❌ cv2.imdecode returned None! bytes length: {len(img_bytes)}")
-            return jsonify({"error": "Invalid frame"}), 400
-        print(f"✅ Frame decoded successfully! Shape: {frame.shape}")
+        from PIL import Image
+        import io
+        pil_img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+        frame = np.array(pil_img)
+        frame = frame[:, :, ::-1].copy()  # RGB to BGR for OpenCV
+        print(f"✅ Frame decoded! Shape: {frame.shape}")
     except Exception as e:
         print(f"❌ Frame decode exception: {str(e)}")
         return jsonify({"error": f"Frame decode error: {str(e)}"}), 400
-
     # ------------------------------------------------------------------
     # Per-peer state
     # ------------------------------------------------------------------
