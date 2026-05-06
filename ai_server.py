@@ -601,8 +601,9 @@ def health():
     })
 
 
+# At the bottom of ai_server.py — REPLACE the if block with this:
+load_model()   # ← runs on import, works with gunicorn
+
 if __name__ == '__main__':
-    load_model()
     print("\n🚀 AI Server running on http://localhost:5001")
-    print("   Make sure best_18_sentence_mstp.pth is in the same folder.\n")
     app.run(host='0.0.0.0', port=5001, debug=False, threaded=False)
