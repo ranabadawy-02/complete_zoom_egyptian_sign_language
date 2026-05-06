@@ -604,6 +604,20 @@ def health():
 # At the bottom of ai_server.py — REPLACE the if block with this:
 load_model()   # ← runs on import, works with gunicorn
 
+@app.route('/check_files', methods=['GET'])
+def check_files():
+    import os
+    files = os.listdir('.')
+    cwd = os.getcwd()
+    model_exists = os.path.exists('best_18_sentence_mstp(2).pth')
+    model_size = os.path.getsize('best_18_sentence_mstp(2).pth') if model_exists else 0
+    return jsonify({
+        "working_directory": cwd,
+        "all_files": files,
+        "model_exists": model_exists,
+        "model_size_mb": round(model_size / 1024 / 1024, 2)
+    })
+
 if __name__ == '__main__':
     print("\n🚀 AI Server running on http://localhost:5001")
     app.run(host='0.0.0.0', port=5001, debug=False, threaded=False)
